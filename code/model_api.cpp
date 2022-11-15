@@ -49,6 +49,7 @@ void sweepLoop(Loop* bottom_l, Face*& top, Loop* now_l, const Vec3& dir, Real d)
     auto e = bottom_l->first_e;
     auto st_e = e;
     std::vector<Vertex*> vec;
+    std::vector<Vertex*> vec2;
     do {
         Point* np = new Point();
         Point* p = e->start_v->p;
@@ -65,6 +66,22 @@ void sweepLoop(Loop* bottom_l, Face*& top, Loop* now_l, const Vec3& dir, Real d)
     for (int i = 0; i < vec.size(); ++i) {
         auto e_v = vec[(i + 1) % vec.size()];
         mef(vec[i], e_v, now_l, top, last);
+        last = now_l;
+    }
+    for (int i = 0; i < vec.size(); ++i) {
+        Point* np = new Point();
+        Vertex* v;
+        Point* p = vec[i]->p;
+        np->x = p->x * 0.3 + 0.3 + dir.x * d * 0.5;
+        np->y = p->y + dir.y * d * 0.5;
+        np->z = p->z * 0.3 + 0.3 + dir.z * d*0.5;
+        mev(vec[i], v, now_l);
+        bindPointToVertex(np, v);
+        vec2.push_back(v);
+    }
+    for (int i = 0; i < vec2.size(); ++i) {
+        auto e_v = vec2[(i + 1) % vec2.size()];
+        mef(vec2[i], e_v, now_l, top, last);
         last = now_l;
     }
 }
